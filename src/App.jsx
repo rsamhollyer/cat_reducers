@@ -1,36 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
+import Cat from './components/Cat';
+import { NAP, EAT, PLAY, actionEat, actionPlay, actionNap } from './actions';
+import ActionButton from './components/ActionButton';
 
 function App() {
-  // Create the count state.
-  const [count, setCount] = useState(0);
-  // Create the counter (+1 every second).
-  useEffect(() => {
-    const timer = setTimeout(() => setCount(count + 1), 1000);
-    return () => clearTimeout(timer);
-  }, [count, setCount]);
-  // Return the App component.
+  const { activity } = useSelector((state) => state.activity);
+  const dispatch = useDispatch();
+  const handleClick = (action) => {
+    if (action === NAP) {
+      dispatch(actionNap());
+    } else if (action === EAT) {
+      dispatch(actionEat());
+    } else {
+      dispatch(actionPlay());
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.jsx</code> and save to reload.
-        </p>
-        <p>
-          Page has been open for <code>{count}</code> seconds.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
+        <Cat activity={activity} />
+        {[NAP, EAT, PLAY].map((each) => (
+          <ActionButton tag={each} handleClick={() => handleClick(each)} />
+        ))}
       </header>
     </div>
   );
